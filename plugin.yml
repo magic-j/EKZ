@@ -1,0 +1,10 @@
+name: EKZ
+main: com.magic_j.ekz.Ekz
+version: 0.9.0.33
+
+commands:
+  ekz:
+    description: This is a trader directory command.
+    usage: /ekz [list | add | shops | addshop <ekz_name> <shop_id> | additem]
+    permission: ekz
+    permission-message: You don't have <permission>
