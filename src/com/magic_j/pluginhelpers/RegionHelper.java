@@ -24,7 +24,7 @@ public class RegionHelper {
 	
 	public static ProtectedRegion getCurrentRegion(Player p) {
 		final RegionManager mgr = worldGuard.getGlobalRegionManager().get(p.getWorld());	
-		LocalPlayer localPlayer = worldGuard.wrapPlayer(p);			
+		LocalPlayer localPlayer = worldGuard.wrapPlayer(p);
 		final Vector pt = localPlayer.getPosition();
         final ApplicableRegionSet set = mgr.getApplicableRegions(pt);
         if (set.size() == 0) {
@@ -34,7 +34,11 @@ public class RegionHelper {
 	}
 
 	public static String getCurrentRegionName(Player player) {
-		return getCurrentRegion(player).getId();
+		ProtectedRegion region = getCurrentRegion(player);
+		if (region == null) {
+			return "";
+		}
+		return region.getId();
 	}
 
 	public static boolean isOwnerOf(Player currentPlayer, ProtectedRegion region) {
