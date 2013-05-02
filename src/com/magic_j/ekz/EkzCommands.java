@@ -1,5 +1,6 @@
 package com.magic_j.ekz;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -32,89 +33,118 @@ public class EkzCommands implements CommandExecutor {
 			return false;
 		}
 		if (!(sender instanceof Player)) {
-			sender.sendMessage("§6Die Befehle sind nur von Spielern verwendbar!");
+			sender.sendMessage(ChatColor.GOLD + "Die Befehle sind nur von Spielern verwendbar!");
 			return false;				
 		}
 		
 		Player currentPlayer = (Player)sender;
 	
 		if (args[0].equalsIgnoreCase("add")) {
-			addEkzAtMyPosition(currentPlayer);
+			if (currentPlayer.hasPermission("ekz.add")){
+				addEkzAtMyPosition(currentPlayer);
+	        }
+			else sender.sendMessage(ChatColor.RED + "You don't have permissions for this command!");
 			return true;
 		}		
 		if (args[0].equalsIgnoreCase("delete")) {
 			if (args.length < 2) {
-				sender.sendMessage("§6Zu wenige Parameter: /ekz delete <ekz_region>");
+				sender.sendMessage(ChatColor.GOLD + "Zu wenige Parameter: /ekz delete <ekz_region>");
 				return true;
 			}
-			deleteEkzByRegionName(sender, args[1]);
+			if (currentPlayer.hasPermission("ekz.delete")){
+				deleteEkzByRegionName(sender, args[1]);
+			}
+			else sender.sendMessage(ChatColor.RED + "You don't have permissions for this command!");
 			return true;
 		}		
 		if (args[0].equalsIgnoreCase("addshop")) {
 			if (args.length < 3) {
-				sender.sendMessage("§6Zu wenige Parameter: /ekz addshop <shop_id> <shop_region>");
+				sender.sendMessage(ChatColor.GOLD + "Zu wenige Parameter: /ekz addshop <shop_id> <shop_region>");
 				return true;
 			}
-			addShopWithIdInRegion(sender, args[1], args[2]);									
+			if (currentPlayer.hasPermission("ekz.addshop")){
+				addShopWithIdInRegion(sender, args[1], args[2]);
+			}
+			else sender.sendMessage(ChatColor.RED + "You don't have permissions for this command!");
 			return true;
 		}	
 		if (args[0].equalsIgnoreCase("delshop")) {
 			if (args.length < 2) {
-				sender.sendMessage("§6Zu wenige Parameter: /ekz delshop <shop_id>");
+				sender.sendMessage(ChatColor.GOLD + "Zu wenige Parameter: /ekz delshop <shop_id>");
 				return true;
 			}
-			deleteShopById(sender, args[1]);		
+			if (currentPlayer.hasPermission("ekz.delshop")){
+				deleteShopById(sender, args[1]);
+			}
+			else sender.sendMessage(ChatColor.RED + "You don't have permissions for this command!");
 			return true;
 		}	
 		if (args[0].equalsIgnoreCase("list")) {
-			currentPlayer.sendMessage("§6Einkaufzentren: " + ekz.getEkzRegister().getEkzNames());
+			if (currentPlayer.hasPermission("ekz.list")){
+				currentPlayer.sendMessage(ChatColor.GOLD + "Einkaufzentren: " + ekz.getEkzRegister().getEkzNames());
+			}
+			else sender.sendMessage(ChatColor.RED + "You don't have permissions for this command!");
 			return true;
 		}		
 		if (args[0].equalsIgnoreCase("shops")) {
 			if (args.length < 1) {
-				currentPlayer.sendMessage("§6Zu wenige Parameter: /ekz shops <seite>");
+				currentPlayer.sendMessage(ChatColor.GOLD + "Zu wenige Parameter: /ekz shops <seite>");
 				return true;
 			}
-			int page = 0;
-			if (args.length > 2) {
-				page = Integer.parseInt(args[1]);
+			if (currentPlayer.hasPermission("ekz.shops")){
+				int page = 0;
+				if (args.length > 2) {
+					page = Integer.parseInt(args[1]);
+				}
+				showShopPages(currentPlayer, page);
 			}
-			showShopPages(currentPlayer, page);
+			else sender.sendMessage(ChatColor.RED + "You don't have permissions for this command!");
 			return true;
 		}
 		if (args[0].equalsIgnoreCase("shoplist")) {
-			showShopList(currentPlayer);
+			if (currentPlayer.hasPermission("ekz.shoplist")){
+				showShopList(currentPlayer);
+			}
 			return true;
 		}
 		if (args[0].equalsIgnoreCase("additem")) {
-			registerItemToShop(currentPlayer);
+			if (currentPlayer.hasPermission("ekz.additem")){
+				registerItemToShop(currentPlayer);
+			}
+			else sender.sendMessage(ChatColor.RED + "You don't have permissions for this command!");
 			return true;
 		}
 		if (args[0].equalsIgnoreCase("sell") || args[0].equalsIgnoreCase("buy")) {
 			if (args.length < 2) {
-				currentPlayer.sendMessage("§6Zu wenige Parameter: /ekz "+args[0] + " <item_name>");
+				currentPlayer.sendMessage(ChatColor.GOLD + "Zu wenige Parameter: /ekz "+args[0] + " <item_name>");
 				return true;
 			}
-			int page = 0;
-			if (args.length > 2) {
-				try {
-					page = Integer.parseInt(args[2]);
+			if (currentPlayer.hasPermission("ekz.sellbuy")){				
+				int page = 0;
+				if (args.length > 2) {
+					try {
+						page = Integer.parseInt(args[2]);
+					}
+					catch (NumberFormatException e) { }
 				}
-				catch (NumberFormatException e) { }
+				boolean sell = args[0].equalsIgnoreCase("sell");
+				getShopOfersForItem(currentPlayer, args[1], page, sell);
 			}
-			boolean sell = args[0].equalsIgnoreCase("sell");
-			getShopOfersForItem(currentPlayer, args[1], page, sell);
+			else sender.sendMessage(ChatColor.RED + "You don't have permissions for this command!");
 			return true;
 		}
 		if (args[0].equalsIgnoreCase("adminshop")) {
 			if (args.length < 2) {
-				currentPlayer.sendMessage("§6Zu wenige Parameter: /ekz adminshop info");
+				currentPlayer.sendMessage(ChatColor.GOLD + "Zu wenige Parameter: /ekz adminshop info");
 				return true;
 			}
+			
 			Material item = currentPlayer.getItemInHand().getType();
 			ekz.getEkzRegister().shopAdminShopData(item);
 			return true;
 		}
+		
+		
 		return false;							
     }
 
@@ -122,7 +152,7 @@ public class EkzCommands implements CommandExecutor {
 	private void getShopOfersForItem(Player currentPlayer, String ItemId, int page, boolean sell) {
 		String ekzRegion = RegionHelper.getCurrentRegionName(currentPlayer);
 		if (!ekz.getEkzRegister().ekzExist(ekzRegion)) {
-			currentPlayer.sendMessage("§6Du befindest dich in keinem Einkaufszentrum!");
+			currentPlayer.sendMessage(ChatColor.GOLD + "Du befindest dich in keinem Einkaufszentrum!");
 			return;
 		}
 		ekz.getEkzRegister().showItemList(currentPlayer, ekzRegion, ItemId, sell, page);
@@ -131,30 +161,30 @@ public class EkzCommands implements CommandExecutor {
 	private void registerItemToShop(Player currentPlayer) {
 		Block b = currentPlayer.getTargetBlock(null, 100);		
 		if (b == null || b.getType() != Material.WALL_SIGN && b.getType() != Material.SIGN_POST) {
-			currentPlayer.sendMessage("§6Ziele auf das zu registierende Shop-Schild und versuch es nochmal!");
+			currentPlayer.sendMessage(ChatColor.GOLD + "Ziele auf das zu registierende Shop-Schild und versuch es nochmal!");
 			return;
 		}			
 		
 		ProtectedRegion region = RegionHelper.getBlockRegion(b);
 		if (region == null) {
-			currentPlayer.sendMessage("§6Das Schild befindet sich in keiner Region!");
+			currentPlayer.sendMessage(ChatColor.GOLD + "Das Schild befindet sich in keiner Region!");
 			return;
 		}
 //		if (!RegionHelper.isOwnerOf(currentPlayer, region)) {
-			//currentPlayer.sendMessage("§6Info: Dieser Shop gehört nicht dir!");
+			//currentPlayer.sendMessage(ChatColor.GOLD + "Info: Dieser Shop gehört nicht dir!");
 			//return true; // check if nessesary
 //		}
 		
 		
 		Sign sign = (Sign)b.getState();			
 		if (!ChestShopSign.isValid(sign)) {
-			currentPlayer.sendMessage("§6Das ist kein Shop-Schild!");
+			currentPlayer.sendMessage(ChatColor.GOLD + "Das ist kein Shop-Schild!");
 			return;
 		}						
 		
 		String chestShopOwnerName = sign.getLine(0);
 		if (!chestShopOwnerName.equalsIgnoreCase(currentPlayer.getName())) {
-			currentPlayer.sendMessage("§6Das Shop-Schild ist nicht von dir!");
+			currentPlayer.sendMessage(ChatColor.GOLD + "Das Shop-Schild ist nicht von dir!");
 			return;
 		}
 		    	
@@ -168,10 +198,10 @@ public class EkzCommands implements CommandExecutor {
 		}
 		item.setAmount(amount);
 		if (ekz.getEkzRegister().addItem(region.getId(), chestShopOwnerName, item, buyPrice, sellPrice)) {
-			currentPlayer.sendMessage("§6Angebot wurde registriert (" + amount + "x " + itemName + (buyPrice>0 ? " B:"+buyPrice : "")  + (sellPrice>0 ? " S:"+sellPrice : "") + ")");
+			currentPlayer.sendMessage(ChatColor.GOLD + "Angebot wurde registriert (" + amount + "x " + itemName + (buyPrice>0 ? " B:"+buyPrice : "")  + (sellPrice>0 ? " S:"+sellPrice : "") + ")");
 		}
 		else {
-			currentPlayer.sendMessage("§6Angebot konnte nicht registriert werden!");
+			currentPlayer.sendMessage(ChatColor.GOLD + "Angebot konnte nicht registriert werden!");
 		}
 	}
 
@@ -188,56 +218,56 @@ public class EkzCommands implements CommandExecutor {
 	private void deleteShopById(CommandSender sender, String shopId) {
 		String ekzRegion = RegionHelper.getCurrentRegionName((Player)sender);		
 		if (!ekz.getEkzRegister().ekzExist(ekzRegion)) {	
-			sender.sendMessage("§6Es wurde kein Einkaufszentrum mit diesem Namen gefunden!");
+			sender.sendMessage(ChatColor.GOLD + "Es wurde kein Einkaufszentrum mit diesem Namen gefunden!");
 			return;
 		}
 		if (ekz.getEkzRegister().deleteShop(ekzRegion, shopId)) {
-			sender.sendMessage("§6Shop wurde gelöscht.");
+			sender.sendMessage(ChatColor.GOLD + "Shop wurde gelöscht.");
 		}
 	}
 
 	private void addShopWithIdInRegion(CommandSender sender, String shopId, String shopRegion) {
 		String ekzRegion = RegionHelper.getCurrentRegionName((Player)sender);
 		if (ekzRegion.isEmpty()) {
-			sender.sendMessage("§6Du befindest dich in keiner Region!");
+			sender.sendMessage(ChatColor.GOLD + "Du befindest dich in keiner Region!");
 			return;
 		}
 		if (!ekz.getEkzRegister().ekzExist(ekzRegion)) {
-			sender.sendMessage("§6Du befindest dich in keinem Einkaufszentrum!");
+			sender.sendMessage(ChatColor.GOLD + "Du befindest dich in keinem Einkaufszentrum!");
 			return;
 		}
 		if (ekz.getEkzRegister().addNewShop(ekzRegion, shopId, shopRegion)) {
-			sender.sendMessage("§6Shop '" + shopId + "' in '" + shopRegion + "' wurde erstellt.");
+			sender.sendMessage(ChatColor.GOLD + "Shop '" + shopId + "' in '" + shopRegion + "' wurde erstellt.");
 		}
 		else {
-			sender.sendMessage("§6Shop '" + shopId + "' in '" + shopRegion + "' konnte nicht erstellt werden!");
+			sender.sendMessage(ChatColor.GOLD + "Shop '" + shopId + "' in '" + shopRegion + "' konnte nicht erstellt werden!");
 		}
 	}
 
 	private void deleteEkzByRegionName(CommandSender sender, String ekzRegion) {
 		if (!ekz.getEkzRegister().ekzExist(ekzRegion)) {				
-			sender.sendMessage("§6Es wurde kein Einkaufszentrum mit diesem Namen gefunden!");
+			sender.sendMessage(ChatColor.GOLD + "Es wurde kein Einkaufszentrum mit diesem Namen gefunden!");
 			return;
 		}
 		if (ekz.getEkzRegister().deleteEkz(ekzRegion)) {
-			sender.sendMessage("§6Einkaufszentrum wurde gelöscht.");
+			sender.sendMessage(ChatColor.GOLD + "Einkaufszentrum wurde gelöscht.");
 		}
 		else {
-			sender.sendMessage("§6Einkaufszentrum konnte nicht gelöscht werden.");
+			sender.sendMessage(ChatColor.GOLD + "Einkaufszentrum konnte nicht gelöscht werden.");
 		}
 	}
 
 	private void addEkzAtMyPosition(Player currentPlayer) {
 		String ekzRegion = RegionHelper.getCurrentRegionName(currentPlayer);
 		if (ekzRegion.isEmpty()) {
-			currentPlayer.sendMessage("§6Du befindest dich in keiner Region!");
+			currentPlayer.sendMessage(ChatColor.GOLD + "Du befindest dich in keiner Region!");
 			return;
 		}
 		if (ekz.getEkzRegister().addNewEkz(ekzRegion)) {
-			currentPlayer.sendMessage("§6Einkaufszentrum '" + ekzRegion + "' wurde erstellt.");
+			currentPlayer.sendMessage(ChatColor.GOLD + "Einkaufszentrum '" + ekzRegion + "' wurde erstellt.");
 		}
 		else {
-			currentPlayer.sendMessage("§6Einkaufszentrum '" + ekzRegion + "' konnte nicht erstellt werden!");
+			currentPlayer.sendMessage(ChatColor.GOLD + "Einkaufszentrum '" + ekzRegion + "' konnte nicht erstellt werden!");
 		}
 	}
 }

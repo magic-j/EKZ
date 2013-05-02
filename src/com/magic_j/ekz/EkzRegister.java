@@ -7,16 +7,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.w3c.dom.Element;
 
-import com.magic_j.pluginhelpers.RegionHelper;
-
 import yt.codebukkit.scoreboardapi.Scoreboard;
 import yt.codebukkit.scoreboardapi.ScoreboardAPI;
+
+import com.magic_j.pluginhelpers.RegionHelper;
 
 // http://forums.bukkit.org/threads/tutorial-scoreboards-teams-with-the-bukkit-api.139655/
 
@@ -52,7 +53,7 @@ public class EkzRegister {
 		
 		Map<Integer, String> shops = xmlData.getShopList(ekzName, p.getWorld(), false);
 		if (shops == null || shops.size() == 0) {
-			p.sendMessage("§6Es wurden noch keine Shops eingetragen!");
+			p.sendMessage(ChatColor.GOLD + "Es wurden noch keine Shops eingetragen!");
 			return;
 		}
 		
@@ -77,9 +78,9 @@ public class EkzRegister {
 		Scoreboard shopPage = ScoreboardAPI.getInstance().getScoreboard(newBoardId);
 		if (shopPage == null) {
 			shopPage = ScoreboardAPI.getInstance().createScoreboard(newBoardId, 3);
-			//p.sendMessage("§6new BoardId: " + newBoardId);
+			//p.sendMessage(ChatColor.GOLD + "new BoardId: " + newBoardId);
 			shopPage.setType(Scoreboard.Type.SIDEBAR);
-			shopPage.setScoreboardName("§6Shops (§e" + newEkzPage.page + "/" + pageAnz + "§6) §cNr.");
+			shopPage.setScoreboardName(ChatColor.GOLD + "Shops (§e" + newEkzPage.page + "/" + pageAnz + ChatColor.GOLD + ") §cNr.");
 		}
 		else {
 			shopPage.clearItems();
@@ -210,7 +211,7 @@ public class EkzRegister {
 			}
 		}
 		if (itemMap.size() == 0) {
-			p.sendMessage("§6Es wurden keine passende Angebote gefunden!");
+			p.sendMessage(ChatColor.GOLD + "Es wurden keine passende Angebote gefunden!");
 			return;
 		}
 				
@@ -240,9 +241,9 @@ public class EkzRegister {
 		Scoreboard itemsPage = ScoreboardAPI.getInstance().getScoreboard(newBoardId);
 		if (itemsPage == null) {
 			itemsPage = ScoreboardAPI.getInstance().createScoreboard(newBoardId, 3);
-			//p.sendMessage("§6new BoardId: " + newBoardId);
+			//p.sendMessage(ChatColor.GOLD + "new BoardId: " + newBoardId);
 			itemsPage.setType(Scoreboard.Type.SIDEBAR);
-			itemsPage.setScoreboardName("§6Items (§e" + newEkzPage.page + "/" + pageAnz + "§6) §cShopNr.");
+			itemsPage.setScoreboardName(ChatColor.GOLD + "Items (§e" + newEkzPage.page + "/" + pageAnz + ChatColor.GOLD + ") §cShopNr.");
 		}
 		else {
 			itemsPage.clearItems();
@@ -269,7 +270,7 @@ public class EkzRegister {
 	public void showShopList(Player p, String ekzName) {
 		Map<Integer, String> shops = xmlData.getShopList(ekzName, p.getWorld(), true);
 		if (shops == null || shops.size() == 0) {
-			p.sendMessage("§6Es wurden noch keine Shops eingetragen!");
+			p.sendMessage(ChatColor.GOLD + "Es wurden noch keine Shops eingetragen!");
 			return;
 		}
 		Set<Integer> keys = shops.keySet();	    

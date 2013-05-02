@@ -1,10 +1,39 @@
 name: EKZ
 main: com.magic_j.ekz.Ekz
 version: 0.9.0.33
-
+author: magic_j
+depend: [WorldEdit, WorldGuard, ChestShop, ScoreboardAPI]
 commands:
   ekz:
     description: This is a trader directory command.
-    usage: /ekz [list | add | shops | addshop <ekz_name> <shop_id> | additem]
-    permission: ekz
+    usage: /ekz [list | add | delete | shoplist | shops | addshop <shop_id> <shop_region> | additem]
     permission-message: You don't have <permission>
+permissions:
+  ekz.*:
+    description: Gives access to all ekz commands
+    children:
+      ekz.add: true
+      ekz.delete: false
+      ekz.list: true
+      ekz.addshop: true
+      ekz.delshop: true
+      ekz.shoplist: true
+      ekz.additem: true
+  ekz.add:
+    default: op
+  ekz.delete:
+    default: false
+  ekz.list:
+    default: op
+  ekz.addshop:
+    default: op
+  ekz.delshop:
+    default: op
+  ekz.shoplist:
+    default: op
+  ekz.additem:
+    default: op
+  ekz.shops:
+    default: true
+  ekz.sellbuy:
+    default: true
