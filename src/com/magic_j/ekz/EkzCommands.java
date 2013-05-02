@@ -41,40 +41,36 @@ public class EkzCommands implements CommandExecutor {
 		if (args[0].equalsIgnoreCase("add")) {
 			addEkzAtMyPosition(currentPlayer);
 			return true;
-		}
-		
-		else if (args[0].equalsIgnoreCase("delete")) {
+		}		
+		if (args[0].equalsIgnoreCase("delete")) {
 			if (args.length < 2) {
 				sender.sendMessage("§6Zu wenige Parameter: /ekz delete <ekz_region>");
 				return true;
 			}
 			deleteEkzByRegionName(sender, args[1]);
 			return true;
-		}
-		
-		else if (args[0].equalsIgnoreCase("addshop")) {
+		}		
+		if (args[0].equalsIgnoreCase("addshop")) {
 			if (args.length < 3) {
 				sender.sendMessage("§6Zu wenige Parameter: /ekz addshop <shop_id> <shop_region>");
 				return true;
 			}
 			addShopWithIdInRegion(sender, args[1], args[2]);									
 			return true;
-		}
-	
-		else if (args[0].equalsIgnoreCase("delshop")) {
+		}	
+		if (args[0].equalsIgnoreCase("delshop")) {
 			if (args.length < 2) {
 				sender.sendMessage("§6Zu wenige Parameter: /ekz delshop <shop_id>");
 				return true;
 			}
 			deleteShopById(sender, args[1]);		
 			return true;
-		}
-	
-		else if (args[0].equalsIgnoreCase("list")) {
+		}	
+		if (args[0].equalsIgnoreCase("list")) {
 			currentPlayer.sendMessage("§6Einkaufzentren: " + ekz.getEkzRegister().getEkzNames());
-		}
-		
-		else if (args[0].equalsIgnoreCase("shops")) {
+			return true;
+		}		
+		if (args[0].equalsIgnoreCase("shops")) {
 			if (args.length < 1) {
 				currentPlayer.sendMessage("§6Zu wenige Parameter: /ekz shops <seite>");
 				return true;
@@ -83,17 +79,18 @@ public class EkzCommands implements CommandExecutor {
 			if (args.length > 2) {
 				page = Integer.parseInt(args[1]);
 			}
-			showShopPages(currentPlayer, page);						
+			showShopPages(currentPlayer, page);
+			return true;
 		}
-		else if (args[0].equalsIgnoreCase("shoplist")) {
+		if (args[0].equalsIgnoreCase("shoplist")) {
 			showShopList(currentPlayer);
 			return true;
 		}
-		else if (args[0].equalsIgnoreCase("additem")) {
+		if (args[0].equalsIgnoreCase("additem")) {
 			registerItemToShop(currentPlayer);
 			return true;
 		}
-		else if (args[0].equalsIgnoreCase("sell") || args[0].equalsIgnoreCase("buy")) {
+		if (args[0].equalsIgnoreCase("sell") || args[0].equalsIgnoreCase("buy")) {
 			if (args.length < 2) {
 				currentPlayer.sendMessage("§6Zu wenige Parameter: /ekz "+args[0] + " <item_name>");
 				return true;
@@ -109,15 +106,16 @@ public class EkzCommands implements CommandExecutor {
 			getShopOfersForItem(currentPlayer, args[1], page, sell);
 			return true;
 		}
-		else if (args[0].equalsIgnoreCase("adminshop")) {
+		if (args[0].equalsIgnoreCase("adminshop")) {
 			if (args.length < 2) {
 				currentPlayer.sendMessage("§6Zu wenige Parameter: /ekz adminshop info");
 				return true;
 			}
 			Material item = currentPlayer.getItemInHand().getType();
 			ekz.getEkzRegister().shopAdminShopData(item);
+			return true;
 		}
-		return true;							
+		return false;							
     }
 
 
